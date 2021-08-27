@@ -1,0 +1,190 @@
+﻿@model TesteBNP.Site.Models.MovimentoManualViewModel
+@using TesteBNP.Negocios.Enumeradores
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<style>
+    .esquerda {
+        display: inline-block;
+        width: 150px;
+        text-align: right;
+    }
+
+    .label-lista {
+    }
+
+    button {
+        display: inline-block;
+        margin-right: 3px;
+    }
+
+    .essa {
+        display: flex;
+        justify-content: flex-end;
+        margin-left: 833px;
+    }
+
+    .lista-borda {
+    }
+
+    textarea {
+        width: 680px !important;
+        resize: none;
+    }
+</style>
+<div class="content">
+    <div class="container">
+        <div class="">
+            <div class="">
+                <form asp-action="IncluirMovimentoManual" asp-antiforgery="true" method="post">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <h3>Movimentos Manuais</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <label>Movimentos</label>
+                    <div class="row mt-4">
+                        <label class="esquerda">Mês:</label>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <input maxlength="2" name="MovimentoManual.Mes" asp-for="MovimentoManual.Mes" value="@Model.MovimentoManual.Mes" class="form-control" type="text" disabled>
+                                <span asp-validation-for="MovimentoManual.Mes" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <label class="esquerda">Ano:</label>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <input maxlength="4" name="MovimentoManual.Ano" asp-for="MovimentoManual.Ano" value="@Model.MovimentoManual.Ano" class="form-control" type="text" disabled>
+                                <span asp-validation-for="MovimentoManual.Ano" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="esquerda">Produto:</label>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <select name="MovimentoManual.CodigoProduto" value="@Model.MovimentoManual.CodigoProduto" asp-for="MovimentoManual.CodigoProduto" class="form-control" disabled>
+                                    <option value="" selected disabled>Selecione</option>
+                                    @foreach (var item in Model.Produtos)
+                                    {
+                                        if (object.Equals(item.Status, Status.ATIVO))
+                                        {
+                                            <option value="@item.CodProduto">@item.DescricaoProduto</option>
+                                        }
+                                    }
+                                </select>
+                                <span asp-validation-for="MovimentoManual.CodigoProduto" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <label class="esquerda">Cosif:</label>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <select name="MovimentoManual.CodigoCosif" asp-for="MovimentoManual.CodigoCosif" value="@Model.MovimentoManual.CodigoCosif" class="form-control" disabled>
+                                    <option value="" selected disabled>Selecione</option>
+                                    @foreach (var item in Model.ProdutosCosif)
+                                    {
+                                        if (object.Equals(item.Status, Status.ATIVO))
+                                        {
+                                            <option value="@item.CodigoCosif">@item.CodigoCosif - (@item.CodigoClassificacao)</option>
+                                        }
+                                    }
+                                </select>
+                                <span asp-validation-for="MovimentoManual.CodigoCosif" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="esquerda">Valor:</label>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <input maxlength="21" name="MovimentoManual.Valor" asp-for="MovimentoManual.Valor" value="@Model.MovimentoManual.Valor" class="form-control" type="text" disabled>
+                                <span asp-validation-for="MovimentoManual.Valor" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="esquerda">Descrição:</label>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <textarea maxlength="50" name="MovimentoManual.Descricao" asp-for="MovimentoManual.Descricao" value="@Model.MovimentoManual.Descricao" class="form-control" id="exampleFormControlTextarea1" rows="3" disabled></textarea>
+                                <span asp-validation-for="MovimentoManual.Descricao" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <div class="form-group essa">
+                                <button type="button" class="btn btn-secondary" id="limpar">Limpar</button>
+                                <button type="button" class="btn btn-primary" id="novo">Novo</button>
+                                <button type="submit" class="btn btn-success" id="incluir">Incluir</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div class="row lista-borda">
+                    <div class="col-md">
+                        <div class="form-group">
+                            <label class="label-lista">Lista</label>
+                            <table class="table">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th scope="col">Mês</th>
+                                        <th scope="col">Ano</th>
+                                        <th scope="col">Codigo do Produto</th>
+                                        <th scope="col">Descrição do Produto</th>
+                                        <th scope="col">NR Lançamento</th>
+                                        <th scope="col">Descrição</th>
+                                        <th scope="col">Valor</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.MovimentosManuais)
+                                    {
+                                        <tr>
+                                            <td>@item.Mes</td>
+                                            <td>@item.Ano</td>
+                                            <td>@item.Produto.CodProduto</td>
+                                            <td>@item.Produto.DescricaoProduto</td>
+                                            <td>@item.NumeroLancamento</td>
+                                            <td>@item.Descricao</td>
+                                            <td>@item.Valor</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    window.onload = function () {
+        let inputs = document.getElementsByClassName('form-control');
+        let incluirBtn = document.getElementById("incluir");
+
+        $('#novo').on("click", function () {
+            incluirBtn.disabled = false;
+            for (var i = 0; i < inputs.length; i++) {
+                inputs[i].disabled = false;
+            }
+        });
+
+        for (var i = 0; i < inputs.length; i++) {
+            inputs[i].value = '';
+        }
+
+
+        $('#limpar').on("click", function () {
+            for (var i = 0; i < inputs.length; i++) {
+                inputs[i].value = '';
+            }
+        });
+
+        incluirBtn.disabled = true;
+    }
+</script>
